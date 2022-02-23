@@ -60,7 +60,7 @@ impl Cryptor {
         self.write_file();
     }
 
-    pub fn read_message(&self) {
+    pub fn read_file_message(&self) -> String {
         let mut ch_byte = 'a' as u8;
         let mut msg_bytes: Vec<u8> = Vec::new();
         let mut i_img_byte: usize = 0;
@@ -88,8 +88,7 @@ impl Cryptor {
         }
         // remove null char
         msg_bytes.pop();
-        let msg = String::from_utf8(msg_bytes).unwrap();
-        println!("Message from file:\n\n{}", msg);
+        String::from_utf8(msg_bytes).unwrap()
     }
 
     fn write_file(&self) {
