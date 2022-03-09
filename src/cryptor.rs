@@ -32,31 +32,41 @@ impl Cryptor {
         }
     }
 
-    pub fn write_message(&mut self, mut message: String) {
-        message.push('\0');
-        let message_bytes = message.into_bytes();
+    fn write_byte(&mut self, byte: &u8, index: &mut usize) {
+        let mut temp_byte = byte.clone();
+
+        // 1 byte per 4 image byte
+        for _ in 0..4u32 {
+            // get the 2 bits value
+            let bits: u8 = temp_byte % 4;
+            // shifts to the right and then to the left
+            self.img_bytes[*index] >>= 2;
+            self.img_bytes[*index] <<= 2;
+
+            self.img_bytes[*index] += bits;
+            // shift 2 bits to the right
+            temp_byte >>= 2;
+
+            *index += 1;
+        }
+    }
+
+    pub fn write_message(&mut self, message: String) {
+        self.write_data(message.as_bytes());
+    }
+
+    pub fn write_data(&mut self, data: &[u8]) {
         let mut i_img_byte: usize = 0;
         // Each char is 1 byte (8 bits), the last 2 bits from
         // each byte from the image pixels will be used to save 2 bits from each char
         // foreach char it will be needed 4 image bytes
-        for byte in message_bytes {
-            let mut temp_byte = byte.clone();
-
-            // 1 byte per 4 image byte
-            for _ in 0..4u32 {
-                // get the 2 bits value
-                let bits: u8 = temp_byte % 4;
-                // shifts to the right and then to the left
-                self.img_bytes[i_img_byte] >>= 2;
-                self.img_bytes[i_img_byte] <<= 2;
-
-                self.img_bytes[i_img_byte] += bits;
-                // shift 2 bits to the right
-                temp_byte >>= 2;
-
-                i_img_byte += 1;
-            }
+        for byte in data {
+            self.write_byte(byte, &mut i_img_byte);
         }
+
+        // Write final byte
+        self.write_byte(&0, &mut i_img_byte);
+
         self.write_file();
     }
 

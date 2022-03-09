@@ -4,7 +4,6 @@ use clap::{ArgGroup, Parser};
 
 #[derive(Parser)]
 #[clap(name = "steno")]
-#[clap(author = "Joao R. <jpedrocr2000@hotmail.com>")]
 #[clap(version, about, long_about = None)]
 #[clap(group(
             ArgGroup::new("fileop")
@@ -45,5 +44,21 @@ fn main() {
             cry.write_message(input);
         }
         _ => unreachable!(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    // Note this useful idiom: importing names from outer (for mod tests) scope.
+    use super::*;
+
+    #[test]
+    fn write_message_to_image_and_read() {
+        let mut cry = cryptor::Cryptor::new(String::from("./tests/examples/beetle.png"));
+
+        let msg = "!!!TEST MESSAGE!!!";
+        cry.write_message(String::from(msg));
+
+        assert_eq!(msg, &cry.read_file_message()[..]);
     }
 }
