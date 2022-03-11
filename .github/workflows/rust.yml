@@ -21,8 +21,6 @@ jobs:
       run: cargo test --release
     - name: Build ARM
       run: cargo build --release --target=aarch64-apple-darwin
-    - name: Make DMG
-      run: make dmg-universal
         
   windows:
     runs-on: windows-latest
