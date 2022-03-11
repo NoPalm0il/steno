@@ -1,0 +1,49 @@
+name: Rust
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  macos:
+    runs-on: macos-11
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install ARM target
+      run: rustup update && rustup target add aarch64-apple-darwin
+    - name: Test
+      run: cargo test --release
+    - name: Build ARM
+      run: cargo build --release --target=aarch64-apple-darwin
+    - name: Make DMG
+      run: make dmg-universal
+        
+  windows:
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Test
+      run: cargo test --release
+    - name: Build
+      run: cargo build --release
+        
+  linux:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Test
+      run: cargo test --release
+    - name: Build
+      run: cargo build --release
