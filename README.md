@@ -3,7 +3,7 @@ Steno
 </h1>
 
 <p align="center">
-    <img src="./tests/assets/beetle.png" alt="Image with a super secret message"> </br>
+    <img src="./tests/examples/beetle.png" alt="Image with a super secret message"> </br>
 Steno is as mega cool tool to write your private messages into non-suspicious png files 🤫
 </p>
 
