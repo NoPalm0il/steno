@@ -1,6 +1,6 @@
 [package]
 name = "steno"
-version = "0.2.1"
+version = "0.3.0"
 description = "Steno is as mega cool tool to write your private messages into non-suspicious png files"
 repository = "https://github.com/NoPalm0il/steno"
 edition = "2021"
@@ -9,7 +9,7 @@ readme = "README.md"
 [dependencies]
 png = "0.17.2"
 rand = "0.8.4"
-clap = { version = "3.1.2", features = ["derive"] }
+clap = { version = "3.1.2", features = ["derive", "cargo"] }
 
 [profile.release]
 strip = "debuginfo"
