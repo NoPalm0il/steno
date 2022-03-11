@@ -1,31 +1,51 @@
-use std::io;
+use std::{io, path::PathBuf};
 
-use clap::{ArgGroup, Parser};
-
-#[derive(Parser)]
-#[clap(name = "steno")]
-#[clap(version, about, long_about = None)]
-#[clap(group(
-            ArgGroup::new("fileop")
-                .required(true)
-                .args(&["write", "read"]),
-        ))]
-struct Cli {
-    #[clap(short, long)]
-    read: bool,
-
-    #[clap(short, long)]
-    write: bool,
-
-    /// filename input
-    #[clap(group = "input")]
-    filename: String,
-}
+use clap::{ArgGroup, Parser, Command, Arg};
 
 mod cryptor;
 
 fn main() {
-    let cli = Cli::parse();
+    let matches = Command::new("steno")
+        .about("package manager utility")
+        .version("5.2.1")
+        .subcommand_required(true)
+        .arg_required_else_help(true)
+        .author("Pacman Development Team")
+        // Query subcommand
+        //
+        // Only a few of its arguments are implemented below.
+        .arg(
+            Arg::new("read")
+                .short('r')
+                .long("read")
+                .help("Reads the PNG hidden message.")
+        )
+        // Sync subcommand
+        //
+        // Only a few of its arguments are implemented below.
+        .subcommand(
+            Command::new("write")
+                .short_flag('w')
+                .long_flag("write")
+                .about("Writes content to PNG file.")
+                .arg(
+                    Arg::new("search")
+                        .short('s')
+                        .long("search")
+                        .conflicts_with("info")
+                        .takes_value(true)
+                        .multiple_values(false)
+                        .help("search remote repositories for matching strings"),
+                )
+                .arg(
+                    Arg::new("package")
+                        .help("packages")
+                        .required_unless_present("search")
+                        .takes_value(true)
+                        .multiple_values(true),
+                ),
+        )
+        .get_matches();
 
     let (read, write) = (cli.read, cli.write);
     match (read, write) {

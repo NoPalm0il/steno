@@ -55,6 +55,13 @@ impl Cryptor {
         self.write_data(message.as_bytes());
     }
 
+    /// Write the contents of a file into the picture
+    pub fn write_from_file(&mut self, from_file: String) {
+        let data = fs::read(from_file)
+            .expect("Something went wrong reading the file");
+        self.write_data(&data);
+    }
+
     pub fn write_data(&mut self, data: &[u8]) {
         let mut i_img_byte: usize = 0;
         // Each char is 1 byte (8 bits), the last 2 bits from
