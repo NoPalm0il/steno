@@ -7,7 +7,7 @@ use std::{
 use png::OutputInfo;
 
 pub struct Cryptor {
-    pub file_name: String,
+    pub filename: String,
     pub info: OutputInfo,
     img_bytes: Vec<u8>,
 }
@@ -27,7 +27,7 @@ impl Cryptor {
 
         Cryptor {
             info,
-            file_name: filename,
+            filename,
             img_bytes,
         }
     }
@@ -56,9 +56,8 @@ impl Cryptor {
     }
 
     /// Write the contents of a file into the picture
-    pub fn write_from_file(&mut self, from_file: String) {
-        let data = fs::read(from_file)
-            .expect("Something went wrong reading the file");
+    pub fn write_from_file(&mut self, from_file: &str) {
+        let data = fs::read(from_file).expect("Something went wrong reading the file");
         self.write_data(&data);
     }
 
@@ -109,12 +108,11 @@ impl Cryptor {
     }
 
     fn write_file(&self) {
-        match fs::remove_file(&self.file_name[..]) {
+        match fs::remove_file(Path::new(&self.filename)) {
             _ => (),
         }
 
-        let path = Path::new(&self.file_name[..]);
-        let file = File::create(path).unwrap();
+        let file = File::create(&self.filename).unwrap();
         let ref mut w = BufWriter::new(file);
 
         let mut encoder = png::Encoder::new(w, self.info.width, self.info.height); // Width is 2 pixels and height is 1.
